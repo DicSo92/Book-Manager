@@ -2,24 +2,45 @@
   <div class="ion-page">
     <ion-header>
       <ion-toolbar>
-        <ion-title>Hello World</ion-title>
+        <ion-title>Books Manager</ion-title>
       </ion-toolbar>
     </ion-header>
-    <ion-content class="ion-padding">
-      <h1>Welcome To @ionic/vue</h1>
-      <img alt="Vue logo" src="../assets/logo.png">
-    </ion-content>
+
+    <books></books>
+
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+      <ion-fab-button size="large" color="warning" @click="openModal">
+        <ion-icon name="add"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
   </div>
+
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+  import modal from '@/components/modal.vue'
+  import books from '@/components/books.vue'
 
-export default {
-  name: 'Home',
-  components: {
-    HelloWorld
+
+  export default {
+
+    name: 'Home',
+    components:{
+      books
+    },
+    methods: {
+      openModal() {
+        return this.$ionic.modalController
+                .create({
+                  component: modal,
+                })
+                .then(m => m.present())
+      },
+    },
   }
-}
+
 </script>
+
+<style lang="scss">
+
+</style>
