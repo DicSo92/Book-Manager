@@ -10,7 +10,7 @@
                 <ion-icon name="settings"></ion-icon>
             </ion-fab-button>
             <ion-fab-list side="end">
-                <ion-fab-button color="medium"  @click="refresh">
+                <ion-fab-button color="medium" @click="refresh">
                     <ion-icon name="refresh"></ion-icon>
                 </ion-fab-button>
                 <ion-fab-button color="dark" @click="shuffle">
@@ -24,20 +24,17 @@
 
 <script>
     import modal from '@/components/modal.vue'
+
     export default {
         name: 'FabButtons',
-        data(){
-            return{
-                books: "",
-            }
+        data() {
+            return {}
         },
         mounted() {
 
         },
-        computed: {
-
-        },
-        methods :{
+        computed: {},
+        methods: {
             openModal() {
                 return this.$ionic.modalController
                     .create({

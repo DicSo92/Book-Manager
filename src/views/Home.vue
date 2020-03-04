@@ -4,9 +4,15 @@
       <ion-toolbar>
         <ion-title>Books Manager</ion-title>
       </ion-toolbar>
+      <ion-toolbar class="ion-text-start">
+        <ion-searchbar animated position="start"
+                       v-bind:value="search"
+                       @input="search = $event.target.value">
+        </ion-searchbar>
+      </ion-toolbar>
     </ion-header>
 
-    <TheBookList></TheBookList>
+    <TheBookList :search="search"></TheBookList>
 
     <FabButtons></FabButtons>
   </div>
@@ -23,6 +29,11 @@
     components:{
       TheBookList,
       FabButtons
+    },
+    data () {
+      return {
+        search: ''
+      }
     },
     methods: {
 

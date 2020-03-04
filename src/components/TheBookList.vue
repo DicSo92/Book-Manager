@@ -2,7 +2,7 @@
     <ion-content fullscreen>
         <ion-list class="booksContainer">
             <transition-group name="list" tag="div">
-                <BookItem v-for="(book, i) in this.books"
+                <BookItem v-for="(book, i) in filteredBooks"
                           v-on:delete="deleteBook"
                           :book="book"
                           :key="book.title">
@@ -18,12 +18,13 @@
 
     export default {
         name: 'books',
-        components : {
+        props: ["search"],
+        components: {
             BookItem
         },
-        data(){
-            return{
-                books: "",
+        data() {
+            return {
+                books: [],
             }
         },
         mounted() {
@@ -43,32 +44,37 @@
                 this.editBook(book)
             })
         },
+        watch: {},
         computed: {
+            filteredBooks() {
+                return this.books.filter(book => {
+                    return book.title.toLowerCase().includes(this.search.toLowerCase())
+                })
+            }
         },
-        methods :{
-            storeBooks (books) {
+        methods: {
+            storeBooks(books) {
                 localStorage.setItem('books', books)
                 this.$store.commit('changeBooks', books)
-                console.log(this.$store.state.books)
             },
-            deleteBook (id) {
+            deleteBook(id) {
                 this.books.splice(this.books.findIndex(book => book.isbn === id), 1)
                 this.storeBooks(JSON.stringify(this.books))
             },
-            refresh () {
+            refresh() {
                 this.storeBooks(JSON.stringify(BooksJson))
                 this.books = JSON.parse(localStorage.getItem('books'))
             },
-            shuffle () {
+            shuffle() {
                 this.books.sort((a, b) => Math.random() > .5 ? -1 : 1);
                 this.storeBooks(JSON.stringify(this.books))
             },
-            addBook (newBook) {
+            addBook(newBook) {
                 this.books.unshift(newBook)
                 this.storeBooks(JSON.stringify(this.books))
             },
-            editBook (book) {
-                this.books.splice(this.books.findIndex(bookI => bookI.isbn === book.isbn ), 1, book)
+            editBook(book) {
+                this.books.splice(this.books.findIndex(bookI => bookI.isbn === book.isbn), 1, book)
                 this.storeBooks(JSON.stringify(this.books))
             }
         },
@@ -80,13 +86,16 @@
         opacity: 0;
         transform: translateX(-50px);
     }
+
     .list-leave-active {
         position: absolute;
         /*z-index: 10;*/
     }
+
     .list-move {
         transition: transform 0.5s;
     }
+
     .booksContainer {
         height: 100%;
     }
