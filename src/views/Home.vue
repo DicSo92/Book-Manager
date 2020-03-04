@@ -6,36 +6,26 @@
       </ion-toolbar>
     </ion-header>
 
-    <books></books>
+    <TheBookList></TheBookList>
 
-    <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-      <ion-fab-button size="large" color="warning" @click="openModal">
-        <ion-icon name="add"></ion-icon>
-      </ion-fab-button>
-    </ion-fab>
+    <FabButtons></FabButtons>
   </div>
 
 </template>
 
 <script>
-  import modal from '@/components/modal.vue'
-  import books from '@/components/books.vue'
-
+  import TheBookList from '@/components/TheBookList.vue'
+  import FabButtons from '@/components/FabButtons.vue'
 
   export default {
 
     name: 'Home',
     components:{
-      books
+      TheBookList,
+      FabButtons
     },
     methods: {
-      openModal() {
-        return this.$ionic.modalController
-                .create({
-                  component: modal,
-                })
-                .then(m => m.present())
-      },
+
     },
   }
 

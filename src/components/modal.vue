@@ -9,29 +9,32 @@
       </ion-toolbar>
     </ion-header>
     <ion-content class="ion-padding" fullscreen>
-      <form>
+      <form @submit.prevent="addBook">
         <ion-item class="ion-padding-horizontal">
           <ion-label position="floating">Author Name *</ion-label>
-          <ion-input type="text" name="title"></ion-input>
+          <ion-input type="text" name="author" @input="author = $event.target.value"></ion-input>
         </ion-item>
+        <span class="error" v-if="this.authorError">Author is required</span>
         <ion-item class="ion-padding-horizontal">
           <ion-label position="floating">Book Title *</ion-label>
-          <ion-input  name="author"></ion-input>
+          <ion-input type="text" name="title"></ion-input>
         </ion-item>
+        <span class="error" v-if="this.titleError">Book title is required</span>
         <ion-item class="ion-padding-horizontal">
           <ion-label position="floating">Description</ion-label>
-          <ion-input  name="author"></ion-input>
+          <ion-input type="text" name="description"></ion-input>
         </ion-item>
         <ion-item class="ion-padding-horizontal">
           <ion-label position="floating">Images *</ion-label>
-          <ion-input  name="author"></ion-input>
+          <ion-input type="url" name="imageUrl"></ion-input>
         </ion-item>
+        <span class="error" v-if="this.imageUrlError">Image is required</span>
         <ion-item class="ion-padding-horizontal">
-          <ion-label position="floating">Pages</ion-label>
-          <ion-input  name="author"></ion-input>
+          <ion-label position="floating">Number of Pages</ion-label>
+          <ion-input type="number" name="nbPages"></ion-input>
         </ion-item>
         <div class="ion-padding">
-          <ion-button expand="block" color="secondary">ADD</ion-button>
+          <ion-button expand="block" color="secondary" type="submit">ADD</ion-button>
         </div>
       </form>
     </ion-content>
@@ -40,15 +43,46 @@
 </template>
 
 <script>
-export default {
-  name: 'modal',
+  export default {
+    name: 'modal',
+    data () {
+      return {
+        author: '',
+        title: '',
+        description: '',
+        imageUrl: '',
+        nbPages: '',
 
-  methods :{
-    dismissModal(){
-      this.$ionic.modalController.dismiss()
+        authorError: false,
+        titleError: false,
+        imageUrlError: false
+      }
+    },
+    computed: {
+
+    },
+    methods : {
+      status(validation) {
+        return {
+          error: validation.$error,
+          dirty: validation.$dirty
+        }
+      },
+      dismissModal(){
+        this.$ionic.modalController.dismiss()
+      },
+      addBook() {
+        if (this.author.length < 1) this.authorError = true
+        if (this.title.length < 1) this.titleError = true
+        if (this.imageUrl.length < 1) this.imageUrlError = true
+
+        if (!this.author.length < 1 && !this.title.length < 1 && !this.imageUrl.length < 1) {
+          this.$bus.$emit('addBook')
+          this.$ionic.modalController.dismiss()
+        }
+      }
     }
   }
-}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -66,5 +100,8 @@ export default {
   }
   a {
     color: #42b983;
+  }
+  .error {
+    color: crimson;
   }
 </style>
