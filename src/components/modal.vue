@@ -12,26 +12,26 @@
       <form @submit.prevent="addBook">
         <ion-item class="ion-padding-horizontal">
           <ion-label position="floating">Author Name *</ion-label>
-          <ion-input type="text" name="author" @input="author = $event.target.value"></ion-input>
+          <ion-input type="text" name="author" v-model="author" v-bind:value="author" @input="author = $event.target.value"></ion-input>
         </ion-item>
         <span class="error" v-if="this.authorError">Author is required</span>
         <ion-item class="ion-padding-horizontal">
           <ion-label position="floating">Book Title *</ion-label>
-          <ion-input type="text" name="title"></ion-input>
+          <ion-input type="text" name="title" v-bind:value="title" @input="title = $event.target.value"></ion-input>
         </ion-item>
         <span class="error" v-if="this.titleError">Book title is required</span>
         <ion-item class="ion-padding-horizontal">
           <ion-label position="floating">Description</ion-label>
-          <ion-input type="text" name="description"></ion-input>
+          <ion-input type="text" name="description" v-bind:value="description" @input="description = $event.target.value"></ion-input>
         </ion-item>
         <ion-item class="ion-padding-horizontal">
           <ion-label position="floating">Images *</ion-label>
-          <ion-input type="url" name="imageUrl"></ion-input>
+          <ion-input type="url" name="imageUrl" v-bind:value="imageUrl" @input="imageUrl = $event.target.value"></ion-input>
         </ion-item>
-        <span class="error" v-if="this.imageUrlError">Image is required</span>
+        <span class="error" v-if="this.imageUrlError">Image is required has Url</span>
         <ion-item class="ion-padding-horizontal">
           <ion-label position="floating">Number of Pages</ion-label>
-          <ion-input type="number" name="nbPages"></ion-input>
+          <ion-input type="number" name="nbPages" v-bind:value="nbPages" @input="nbPages = $event.target.value"></ion-input>
         </ion-item>
         <div class="ion-padding">
           <ion-button expand="block" color="secondary" type="submit">ADD</ion-button>
@@ -45,6 +45,7 @@
 <script>
   export default {
     name: 'modal',
+    props: {bookProps: {type: Object}},
     data () {
       return {
         author: '',
@@ -55,19 +56,23 @@
 
         authorError: false,
         titleError: false,
-        imageUrlError: false
+        imageUrlError: false,
+      }
+    },
+    mounted () {
+      console.log(this.bookProps)
+      if (this.editBook !== null) {
+        this.author = this.bookProps.author
+        this.title = this.bookProps.title
+        this.description = this.bookProps.shortDescription
+        this.imageUrl = this.bookProps.thumbnailUrl
+        this.nbPages = this.bookProps.pageCount
       }
     },
     computed: {
 
     },
     methods : {
-      status(validation) {
-        return {
-          error: validation.$error,
-          dirty: validation.$dirty
-        }
-      },
       dismissModal(){
         this.$ionic.modalController.dismiss()
       },
@@ -77,7 +82,16 @@
         if (this.imageUrl.length < 1) this.imageUrlError = true
 
         if (!this.author.length < 1 && !this.title.length < 1 && !this.imageUrl.length < 1) {
-          this.$bus.$emit('addBook')
+          let newBook = {
+            title: this.title,
+            isbn: Date.now(),
+            pageCount: this.nbPages,
+            thumbnailUrl: this.imageUrl,
+            shortDescription: this.description,
+            author: this.author
+          }
+
+          this.$bus.$emit('addBook', newBook)
           this.$ionic.modalController.dismiss()
         }
       }

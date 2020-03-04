@@ -36,16 +36,17 @@
             this.$bus.$on('refresh', () => {
                 this.refresh()
             })
-            this.$bus.$on('addBook', () => {
-                this.addBook()
+            this.$bus.$on('addBook', (newBook) => {
+                this.addBook(newBook)
             })
         },
         computed: {
-
         },
         methods :{
             storeBooks (books) {
                 localStorage.setItem('books', books)
+                this.$store.commit('changeBooks', books)
+                console.log(this.$store.state.books)
             },
             deleteBook (id) {
                 this.books.splice(this.books.findIndex(book => book.isbn === id), 1)
@@ -57,9 +58,12 @@
             },
             shuffle () {
                 this.books.sort((a, b) => Math.random() > .5 ? -1 : 1);
+                this.storeBooks(JSON.stringify(this.books))
             },
-            addBook (book) {
+            addBook (newBook) {
                 console.log('addBook')
+                this.books.unshift(newBook)
+                this.storeBooks(JSON.stringify(this.books))
             }
         },
     }
@@ -72,7 +76,7 @@
     }
     .list-leave-active {
         position: absolute;
-        z-index: 10;
+        /*z-index: 10;*/
     }
     .list-move {
         transition: transform 0.5s;

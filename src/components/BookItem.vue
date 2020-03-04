@@ -16,11 +16,11 @@
         </ion-item>
 
         <ion-item-options side="start">
-            <ion-item-option color="primary">Mark Unread</ion-item-option>
+            <ion-item-option color="primary" @click="showModalEditBook">*Edit*</ion-item-option>
         </ion-item-options>
 
-        <ion-item-options side="end" @click="presentAlertConfirm">
-            <ion-item-option color="danger">Delete</ion-item-option>
+        <ion-item-options side="end">
+            <ion-item-option color="danger" @click="presentAlertConfirm">Delete</ion-item-option>
         </ion-item-options>
     </ion-item-sliding>
 </template>
@@ -28,7 +28,9 @@
     export default {
         name:"book",
         props :["book"],
+        computed: {
 
+        },
         methods:{
             presentAlertConfirm () {
                 return this.$ionic.alertController
@@ -55,7 +57,25 @@
                     })
                     .then(a => a.present())
             },
-
+            showModalEditBook () {
+                return this.$ionic.modalController
+                    .create({
+                        component: () => import('@/components/modal.vue'),
+                        componentProps: {
+                            parent: this,
+                            data: {
+                                content: 'New Content',
+                            },
+                            propsData: {
+                                bookProps: this.book,
+                                closeMe: () => {
+                                    this.$ionic.modalController.dismiss()
+                                },
+                            },
+                        }
+                    })
+                    .then(m => m.present())
+            },
             deleteEmit () {
                 this.$emit('delete', this.book.isbn)
             }
