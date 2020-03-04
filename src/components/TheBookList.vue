@@ -39,6 +39,9 @@
             this.$bus.$on('addBook', (newBook) => {
                 this.addBook(newBook)
             })
+            this.$bus.$on('bookEdited', (book) => {
+                this.editBook(book)
+            })
         },
         computed: {
         },
@@ -61,8 +64,11 @@
                 this.storeBooks(JSON.stringify(this.books))
             },
             addBook (newBook) {
-                console.log('addBook')
                 this.books.unshift(newBook)
+                this.storeBooks(JSON.stringify(this.books))
+            },
+            editBook (book) {
+                this.books.splice(this.books.findIndex(bookI => bookI.isbn === book.isbn ), 1, book)
                 this.storeBooks(JSON.stringify(this.books))
             }
         },

@@ -22,7 +22,7 @@
         <span class="error" v-if="this.titleError">Book title is required</span>
         <ion-item class="ion-padding-horizontal">
           <ion-label position="floating">Description</ion-label>
-          <ion-input type="text" name="description" v-bind:value="description" @input="description = $event.target.value"></ion-input>
+          <ion-textarea type="text" name="description" v-bind:value="description" @input="description = $event.target.value"></ion-textarea>
         </ion-item>
         <ion-item class="ion-padding-horizontal">
           <ion-label position="floating">Images *</ion-label>
@@ -60,8 +60,7 @@
       }
     },
     mounted () {
-      console.log(this.bookProps)
-      if (this.editBook !== null) {
+      if (this.bookProps) {
         this.author = this.bookProps.author
         this.title = this.bookProps.title
         this.description = this.bookProps.shortDescription
@@ -82,16 +81,27 @@
         if (this.imageUrl.length < 1) this.imageUrlError = true
 
         if (!this.author.length < 1 && !this.title.length < 1 && !this.imageUrl.length < 1) {
-          let newBook = {
-            title: this.title,
-            isbn: Date.now(),
-            pageCount: this.nbPages,
-            thumbnailUrl: this.imageUrl,
-            shortDescription: this.description,
-            author: this.author
+          if (this.bookProps) {
+            let bookEdited = {
+              title: this.title,
+              isbn: this.bookProps.isbn,
+              pageCount: this.nbPages,
+              thumbnailUrl: this.imageUrl,
+              shortDescription: this.description,
+              author: this.author
+            }
+            this.$bus.$emit('bookEdited', bookEdited)
+          } else {
+            let newBook = {
+              title: this.title,
+              isbn: Date.now(),
+              pageCount: this.nbPages,
+              thumbnailUrl: this.imageUrl,
+              shortDescription: this.description,
+              author: this.author
+            }
+            this.$bus.$emit('addBook', newBook)
           }
-
-          this.$bus.$emit('addBook', newBook)
           this.$ionic.modalController.dismiss()
         }
       }
